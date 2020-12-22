@@ -14,7 +14,7 @@
 
         </div>
         <button type="submit" name="button" class="btn btn-primary" @click="submit">Submit</button>
-        <button type="submit" class="btn btn-primary ml-2" @click="fetch">Get data</button>
+        <button type="submit" class="btn btn-primary ml-2" @click="fetchData">Get data</button>
       </div>
 
       <ul class="list-group">
@@ -28,24 +28,45 @@
 <script>
 export default {
   name: 'App',
-  data(){
-    return{
-    user:{
-      username:'',
-      email:''
-    },
-    users:[]
-  }
-},
-methods: {
-  submit() {
-    this.$http.post('http://vuejs-http,firebaseio.com/data.json',this.user)
-    .then(response =>{
-      console.log(response);
-    });
+  data() {
+    return {
+      user: {
+        username: '',
+        email: ''
+      },
+      users: []
+    }
+  },
+  /*
+  notice how the url is repeting in the get and post  methods so we can add this url to main.jsand make it universal
+  so it will be use as root url  by Vue.http.option.root = 'https://trial-ea03e-default-rtdb.firebaseio.com/data.json'
+ notice how in this case http does not have a dollar symbol the reason is becaus '$' is only used in the vue instance (app.vue in this case))
+*/
+  methods: {
+    submit() {
+      this.$http.post('https://trial-ea03e-default-rtdb.firebaseio.com/data.json', this.user)
+        .then(response => {
+          console.log(response);
+        }, error => {
+          console.log(error);
+        });
 
+    },
+    fetchData() {
+      this.$http.get('https://trial-ea03e-default-rtdb.firebaseio.com/data.json')
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          const resultArray=[];
+          console.log(data);
+          for ( let key in data){
+              resultArray.push(data[key]);
+          }
+          this.users=resultArray;
+        })
+    }
   }
-}
 }
 </script>
 
